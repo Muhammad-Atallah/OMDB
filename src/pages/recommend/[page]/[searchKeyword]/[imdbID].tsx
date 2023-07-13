@@ -23,6 +23,7 @@ export default function Movie() {
     Writer: string;
     Actors: string;
     Poster: string;
+    imdbID: string;
     Ratings: { Source: string; Value: string }[];
   } | null>(null);
 
@@ -31,19 +32,21 @@ export default function Movie() {
 
     const fetchDetails = async () => {
       try {
-        const movieData = await fetchMovieDetails(router.query.Title);
+        const movieData = await fetchMovieDetails(
+          typeof router.query.imdbID === "string" ? router.query.imdbID : ""
+        );
         setMovieDetails(movieData);
       } catch (error) {
         console.log(error);
       }
     };
 
-    if (router.query.Title) {
+    if (router.query.imdbID) {
       fetchDetails();
     }
 
     router.push({
-      pathname: "/",
+      pathname: "/recommend",
       query: { searchKeyword: searchKeyword || "", page: page || 1 },
     });
   };
@@ -52,7 +55,9 @@ export default function Movie() {
     const fetchDetails = async () => {
       try {
         setIsLoading(true);
-        const movieData = await fetchMovieDetails(router.query.Title);
+        const movieData = await fetchMovieDetails(
+          typeof router.query.imdbID === "string" ? router.query.imdbID : ""
+        );
         setMovieDetails(movieData);
         setIsLoading(false);
       } catch (error) {
@@ -60,10 +65,10 @@ export default function Movie() {
       }
     };
 
-    if (router.query.Title) {
+    if (router.query.imdbID) {
       fetchDetails();
     }
-  }, [router.query.Title]);
+  }, [router.query.imdbID]);
 
   return (
     <>

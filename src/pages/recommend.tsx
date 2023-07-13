@@ -2,33 +2,37 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Recommend.module.css";
 import { generate } from "random-words";
-import {
-  fetchMovieDetails,
-  fetchMovies,
-  fetchRecommendations,
-} from "@/utils/api";
+import { fetchRecommendations } from "@/utils/api";
 import { useEffect, useState } from "react";
 import { MovieCard } from "@/components/MovieCard";
 import { BallTriangle } from "react-loading-icons";
 
+interface Movie {
+  Poster: string;
+  Title: string;
+  Year: string;
+  Type: string;
+  imdbID: string;
+}
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Recommend() {
-  const [movieRecommendations, setMovieRecommendations] = useState<Object[]>(
-    []
-  );
+  const [movieRecommendations, setMovieRecommendations] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getRecommendations = async () => {
-      const lastUpdateTime = localStorage.getItem("recommendationsUpdateTime");
+      const lastUpdateTime: any = localStorage.getItem(
+        "recommendationsUpdateTime"
+      );
       const currentTime = new Date().getTime();
       const twentyFourHours = 20000;
 
+      // Checking if recommendations exist in local storage and have been updated within 24 hours
       if (lastUpdateTime && currentTime - lastUpdateTime < twentyFourHours) {
-        // Recommendations exist in local storage and have been updated within 24 hours
         const storedRecommendations = JSON.parse(
-          localStorage.getItem("recommendations")
+          localStorage.getItem("recommendations") || ""
         );
         setMovieRecommendations(storedRecommendations);
       } else {
@@ -72,9 +76,14 @@ export default function Recommend() {
             {movieRecommendations?.map((movie) => (
               <MovieCard
                 recommendation="true"
-                {...movie}
+                Poster={movie.Poster}
+                Title={movie.Title}
+                Year={movie.Year}
+                Type={movie.Type}
                 searchKeyword={movie.Title}
                 page="1"
+                key={movie.imdbID}
+                imdbID={movie.imdbID}
               />
             ))}
           </section>
@@ -83,57 +92,3 @@ export default function Recommend() {
     </>
   );
 }
-
-// const [randomWordsArray, setRandomWordsArray] = useState<string[]>(
-//   generate(10)
-// );
-
-// useEffect(() => {
-//   const interval = setInterval(() => {
-//     setRandomWordsArray(generate(10));
-//   }, 20000); // Execute every 20 seconds
-
-//   return () => {
-//     clearInterval(interval);
-//   };
-// }, []);
-
-// console.log(randomWordsArray);
-
-// useEffect(() => {
-//   const fetchMovieRecommendations = async () => {
-//     try {
-//       const recommendations = await Promise.all(
-//         randomWordsArray.map(async (randomWord) => {
-//           try {
-//             const movies = await fetchMovies(randomWord, 1); // Get the total list of movies using the randomWord as the search keyword
-//             const randomPage = Math.floor(
-//               Math.random() * Math.floor(movies.totalResults / 10) + 1 // Get a random page number based on the totalResults returned
-//             );
-//             const randomPageOfMovies = await fetchMovies(
-//               randomWord,
-//               randomPage
-//             ); // Get a random page of movies
-//             const randomMovieNumber = Math.floor(Math.random() * 10 + 1);
-//             const randomMovie = await fetchMovieDetails(
-//               randomPageOfMovies?.Search[randomMovieNumber]?.Title
-//             ); // Get one random movie from the page
-
-//             return randomMovie;
-//           } catch (error: any) {
-//             console.error(error.message);
-//             return null;
-//           }
-//         })
-//       );
-
-//       setMovieRecommendations(recommendations.filter(Boolean));
-//     } catch (error: any) {
-//       console.error(error.message);
-//     }
-//   };
-
-//   fetchMovieRecommendations();
-// }, [randomWordsArray]);
-
-// console.log(movieRecommendations);

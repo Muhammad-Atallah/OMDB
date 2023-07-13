@@ -9,7 +9,7 @@ const NavBar: React.FC<NavBarProps> = () => (
   <nav className="bg-[#3c7d70] text-white">
     <div className="flex flex-col sm:flex-row justify-center md:justify-around items-center w-full gap-4">
       <Link href="/">
-        <div className="text-2xl mt-5 sm:py-4 sm:mx-20 sm:mt-0 flex gap-1">
+        <div className="text-2xl mt-5 sm:py-4 sm:mx-20 sm:mt-0 flex">
           <RiMovie2Line size={40} color="white" />
           <h1>OMDB</h1>
         </div>

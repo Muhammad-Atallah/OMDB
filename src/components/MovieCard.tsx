@@ -1,14 +1,25 @@
 import React from "react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
-export const MovieCard = ({
+interface MovieCardProps {
+  Poster: string;
+  Title: string;
+  Year: string;
+  Type: string;
+  searchKeyword: string;
+  page: string;
+  imdbID: string;
+  recommendation: string;
+}
+
+export const MovieCard: React.FC<MovieCardProps> = ({
   Poster,
   Title,
   Year,
   Type,
   searchKeyword,
   page,
+  imdbID,
   recommendation,
 }) => {
   const router = useRouter();
@@ -16,12 +27,12 @@ export const MovieCard = ({
   const handleCardClick = () => {
     if (recommendation === "true") {
       router.push({
-        pathname: `/recommend/${page}/${searchKeyword}/${Title}`,
+        pathname: `/recommend/${page}/${searchKeyword}/${imdbID}`,
         query: { searchKeyword, page }, // Pass the query parameters
       });
     } else {
       router.push({
-        pathname: `/movie/${page}/${searchKeyword}/${Title}`,
+        pathname: `/movie/${page}/${searchKeyword}/${imdbID}`,
         query: { searchKeyword, page }, // Pass the query parameters
       });
     }

@@ -145,7 +145,7 @@ export default function Search() {
         {/* {Pagination Section} */}
         <section
           className={
-            searchKeyword === ""
+            searchKeyword === "" || lastPage === 0
               ? "hidden"
               : "flex gap-2 w-[100vw] justify-center justify-items-center items-center"
           }

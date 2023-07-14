@@ -69,7 +69,7 @@ export default function Recommend() {
       <main className={`${styles.main} ${inter.className}`}>
         <div className="flex flex-col gap-20 justify-center justify-items-center items-center">
           <h1 className="text-xl md:text-2xl text-center font-bold text-[#326660]">
-            Today's Top Picks
+            Today<span>&#39;</span>s Top Picks
           </h1>
           {isLoading && <BallTriangle stroke="#326660" strokeOpacity={0.3} />}
           <section className="w-[100vw] max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 justify-center justify-items-center">

@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { MovieCard } from "@/components/MovieCard";
 import { BallTriangle } from "react-loading-icons";
 
+const inter = Inter({ subsets: ["latin"] });
+
 interface Movie {
   Poster: string;
   Title: string;
@@ -14,8 +16,6 @@ interface Movie {
   Type: string;
   imdbID: string;
 }
-
-const inter = Inter({ subsets: ["latin"] });
 
 export default function Recommend() {
   const [movieRecommendations, setMovieRecommendations] = useState<Movie[]>([]);
@@ -27,7 +27,7 @@ export default function Recommend() {
         "recommendationsUpdateTime"
       );
       const currentTime = new Date().getTime();
-      const twentyFourHours = 20000;
+      const twentyFourHours = 1000 * 60 * 60 * 24;
 
       // Checking if recommendations exist in local storage and have been updated within 24 hours
       if (lastUpdateTime && currentTime - lastUpdateTime < twentyFourHours) {

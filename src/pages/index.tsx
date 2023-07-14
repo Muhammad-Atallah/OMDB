@@ -6,11 +6,19 @@ import { BallTriangle } from "react-loading-icons";
 import { fetchMovies } from "../utils/api";
 import { MovieCard } from "@/components/MovieCard";
 import { SearchBar } from "@/components/SearchBar";
+import { scrollUp } from "@/utils/helpers";
 import { useRouter } from "next/router";
 import {
   BsFillArrowLeftCircleFill,
   BsFillArrowRightCircleFill,
 } from "react-icons/bs";
+
+import {
+  MdKeyboardDoubleArrowLeft,
+  MdKeyboardDoubleArrowRight,
+} from "react-icons/md";
+
+import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,23 +43,51 @@ export default function Search() {
         setMovies([]);
       }
     }
+    scrollUp();
   };
 
   const handleRightPaginationArrow = async () => {
     if (page !== lastPage) {
       try {
         setMovies([]);
-        await setPage(page + 1);
+        setPage(page + 1);
         const moviesData = await fetchMovies(searchKeyword, page + 1);
         setMovies(moviesData.Search);
         setLastPage(Math.ceil(moviesData.totalResults / 10));
-
-        console.log(movies);
       } catch (error: any) {
         console.error(error.message);
         setMovies([]);
       }
     }
+    scrollUp();
+  };
+
+  const handleGoToFirstPage = async () => {
+    if (page !== 1) {
+      try {
+        setPage(1);
+        const moviesData = await fetchMovies(searchKeyword, 1);
+        setMovies(moviesData.Search);
+      } catch (error: any) {
+        console.error(error.message);
+        setMovies([]);
+      }
+    }
+    scrollUp();
+  };
+
+  const handleGoToLastPage = async () => {
+    if (page !== lastPage) {
+      try {
+        setPage(lastPage);
+        const moviesData = await fetchMovies(searchKeyword, lastPage);
+        setMovies(moviesData.Search);
+      } catch (error: any) {
+        console.error(error.message);
+        setMovies([]);
+      }
+    }
+    scrollUp();
   };
 
   //Fetching data based on page query parameters
@@ -105,7 +141,9 @@ export default function Search() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${styles.main} ${inter.className}`}>
+      <main
+        className={`${inter.className} flex flex-col min-h-[100vh] p-10 sm:p-20 justify-start items-center`}
+      >
         {/* {Search section} */}
         <section className="flex flex-col gap-10 justify-center justify-items-center items-center">
           <h1 className="text-lg md:text-2xl font-bold text-[#326660] text-center w-full">
@@ -121,49 +159,63 @@ export default function Search() {
           />
         </section>
         {/* {Status section} */}
-        {status !== "" && status === "Loading..." ? (
-          <BallTriangle stroke="#326660" strokeOpacity={0.3} />
-        ) : (
-          <h1 className="text-[#326660] text-sm sm:text-base font-semibold min-w-[10rem] self-center text-center ">
-            {status}
-          </h1>
+        {searchKeyword !== "" && (
+          <section className="flex justify-center justify-items-center items-center">
+            {status === "Loading..." ? (
+              <BallTriangle stroke="#326660" strokeOpacity={0.3} />
+            ) : (
+              <h1 className="text-[#326660] text-sm sm:text-base font-semibold min-w-[10rem] text-center ">
+                {status}
+              </h1>
+            )}
+          </section>
         )}
 
         {/* {Movies section} */}
-        <section className="w-[100vw] max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 justify-center justify-items-center">
-          {movies.map((movie) => (
-            <MovieCard
-              recommendation="false"
-              {...movie}
-              searchKeyword={searchKeyword}
-              page={page}
-              key={movie.imdbID}
-            />
-          ))}
-        </section>
+        {status === "" && (
+          <section className="w-[100vw] max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 justify-center justify-items-center">
+            {movies.map((movie) => (
+              <MovieCard
+                recommendation="false"
+                {...movie}
+                searchKeyword={searchKeyword}
+                page={page}
+                key={movie.imdbID}
+              />
+            ))}
+          </section>
+        )}
 
         {/* {Pagination Section} */}
         <section
           className={
-            searchKeyword === "" || lastPage === 0
+            searchKeyword === "" || lastPage < 2 || status !== ""
               ? "hidden"
               : "flex gap-2 w-[100vw] justify-center justify-items-center items-center"
           }
         >
-          <BsFillArrowLeftCircleFill
-            onClick={handleLeftPaginationArrow}
-            className="self-center cursor-pointer"
+          <MdKeyboardDoubleArrowLeft
+            onClick={handleGoToFirstPage}
+            className="bg-[#326660] text-white text-xl rounded-full p-1 cursor-pointer self-center hover:bg-[#449182] shadow-sm"
             size={30}
-            color="#326660"
           />
-          <p className="text-xs self-center">
+          <RiArrowLeftSLine
+            onClick={handleLeftPaginationArrow}
+            className="bg-[#326660] text-white text-xl rounded-full p-1 cursor-pointer self-center hover:bg-[#449182] shadow-sm"
+            size={30}
+          />
+          <p className="text-sm self-center text-[#326660]">
             {page} of {lastPage}
           </p>
-          <BsFillArrowRightCircleFill
+          <RiArrowRightSLine
             onClick={handleRightPaginationArrow}
-            className="self-center cursor-pointer"
+            className="bg-[#326660] text-white text-xl rounded-full p-1 cursor-pointer self-center hover:bg-[#449182] shadow-sm"
             size={30}
-            color="#326660"
+          />
+          <MdKeyboardDoubleArrowRight
+            onClick={handleGoToLastPage}
+            className="bg-[#326660] text-white text-xl rounded-full p-1 cursor-pointer self-center hover:bg-[#449182] shadow-sm"
+            size={30}
           />
         </section>
       </main>

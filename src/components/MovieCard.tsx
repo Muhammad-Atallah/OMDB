@@ -28,12 +28,12 @@ export const MovieCard: React.FC<MovieCardProps> = ({
     if (recommendation === "true") {
       router.push({
         pathname: `/recommend/${page}/${searchKeyword}/${imdbID}`,
-        query: { searchKeyword, page }, // Pass the query parameters
+        query: { searchKeyword, page },
       });
     } else {
       router.push({
         pathname: `/movie/${page}/${searchKeyword}/${imdbID}`,
-        query: { searchKeyword, page }, // Pass the query parameters
+        query: { searchKeyword, page },
       });
     }
   };

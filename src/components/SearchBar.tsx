@@ -24,6 +24,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setLastPage(0);
+    setPage(1);
     setSearchKeyword(e.target.value);
     if (e.target.value === "") {
       router.push({
@@ -41,7 +42,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
       const moviesData = await fetchMovies(searchKeyword, 1);
       router.push({
         pathname: `/`,
-        query: { searchKeyword, page }, // Pass the query parameters
+        query: { searchKeyword, page },
       });
       setMovies(moviesData.Search);
       setLastPage(Math.ceil(moviesData.totalResults / 10));
@@ -51,39 +52,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({
     }
   };
 
-  //Fetching data based on the searchKeyword and page query parameters
-  // useEffect(() => {
-  //   const fetchDetails = async () => {
-  //     try {
-  //       const moviesData = await fetchMovies(searchKeyword, page);
-  //       setMovies(moviesData.Search);
-  //       setLastPage(Math.ceil(moviesData.totalResults / 10));
-  //       router.push({
-  //         pathname: "/",
-  //         query: { searchKeyword, page },
-  //       });
-  //     } catch (error: any) {
-  //       console.error(error.message);
-  //       setMovies([]);
-  //     }
-  //   };
-
-  //   if (searchKeyword && page) {
-  //     fetchDetails();
-  //   }
-  // }, [searchKeyword, page]);
-
-  //Resetting states to their default values on refresh
-  // useEffect(() => {
-  //   setSearchKeyword("");
-  //   setMovies([]);
-  //   setPage(1);
-  //   setLastPage(0);
-  //   router.push({
-  //     pathname: "/",
-  //   });
-  // }, []);
-
   return (
     <form className="mb-20 sm:mb-10" onSubmit={handleFormSubmit}>
       <div className="flex flex-col sm:flex-row h-10 gap-5 sm:gap-1">
@@ -91,7 +59,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           type="text"
           value={searchKeyword}
           onChange={handleInputChange}
-          placeholder="Search movies and more..."
+          placeholder="Search movies, series and more..."
           className="p-3 rounded-2xl text-[13px] sm:text-sm w-60 sm:w-80 outline-[#326660] ring-[#326660] text-[#326660] shadow-lg"
         />
         <button

@@ -1,7 +1,7 @@
-import { generate } from "random-words";
-
-const API_KEY = "247450a0";
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 const API_URL = "https://www.omdbapi.com/";
+
+console.log("API_KEY:", API_KEY); // Add this line to check the value
 
 //fetch movies using a search keyword and a page
 export const fetchMovies = async (searchKeyword: string, page: number) => {
@@ -19,7 +19,7 @@ export const fetchMovies = async (searchKeyword: string, page: number) => {
   }
 };
 
-//fetch movies using imdb id
+//fetch movie using imdb id
 export const fetchMovieDetails = async (imdbID: string) => {
   const url = `${API_URL}?i=${encodeURIComponent(imdbID)}&apikey=${API_KEY}`;
   const response = await fetch(url);
@@ -61,11 +61,4 @@ export const fetchRecommendations = async (randomWordsArray: any[]) => {
   );
 
   return recommendations.filter((item) => Boolean(item));
-};
-
-//generate 10 random words
-export const getRandomWords = (arrayOfRandomWords: string[]) => {
-  arrayOfRandomWords = generate(10);
-
-  return arrayOfRandomWords;
 };

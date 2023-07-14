@@ -29,7 +29,6 @@ export default function Movie() {
 
   const handleBackButton = () => {
     const { searchKeyword, page } = router.query;
-
     const fetchDetails = async () => {
       try {
         const movieData = await fetchMovieDetails(
@@ -40,11 +39,9 @@ export default function Movie() {
         console.log(error);
       }
     };
-
     if (router.query.imdbID) {
       fetchDetails();
     }
-
     router.push({
       pathname: "/",
       query: { searchKeyword: searchKeyword || "", page: page || 1 },
@@ -123,42 +120,31 @@ export default function Movie() {
 
                 {/* {Ratings section} */}
                 <section className="flex justify-center gap-10 my-10">
-                  <div className="flex flex-col justify-center justify-items-center gap-1">
-                    <img
-                      className="max-w-[2.5rem]"
-                      src="/images/imdb.png"
-                      alt="imdb-logo"
-                    />
-                    <p className="self-center text-sm text-yellow-600 font-semibold">
-                      {movieDetails?.Ratings[0]?.Value
-                        ? movieDetails?.Ratings[0].Value
-                        : `N/A`}
-                    </p>
-                  </div>
-                  <div className="flex flex-col justify-center justify-items-center gap-1">
-                    <img
-                      className="max-w-[2.5rem]"
-                      src="/images/rotten_tomatoes.svg.png"
-                      alt="imdb-logo"
-                    />
-                    <p className="self-center text-sm text-red-700 font-semibold">
-                      {movieDetails?.Ratings[1]?.Value
-                        ? movieDetails?.Ratings[1].Value
-                        : `N/A`}
-                    </p>
-                  </div>
-                  <div className="flex flex-col justify-center justify-items-center gap-1">
-                    <img
-                      className="max-w-[2.5rem]"
-                      src="/images/Metacritic_logo_original.svg.png"
-                      alt="imdb-logo"
-                    />
-                    <p className="self-center text-sm text-blue-900 font-semibold">
-                      {movieDetails?.Ratings[2]?.Value
-                        ? movieDetails?.Ratings[2].Value
-                        : `N/A`}
-                    </p>
-                  </div>
+                  {movieDetails?.Ratings.map((rating, index) => {
+                    let color =
+                      index === 0
+                        ? "text-yellow-600"
+                        : index === 1
+                        ? "text-red-600"
+                        : "text-blue-900";
+                    return (
+                      <div
+                        key={rating.Source}
+                        className="flex flex-col justify-center justify-items-center gap-1"
+                      >
+                        <img
+                          className="max-w-[2.5rem]"
+                          src={`/images/${rating.Source}.png`}
+                          alt={`${rating.Source}-logo`}
+                        />
+                        <p
+                          className={`self-center text-sm font-semibold ${color}`}
+                        >
+                          {rating.Value}
+                        </p>
+                      </div>
+                    );
+                  })}
                 </section>
               </section>
             </article>

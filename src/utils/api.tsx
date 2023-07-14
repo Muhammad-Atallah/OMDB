@@ -1,8 +1,6 @@
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 const API_URL = "https://www.omdbapi.com/";
 
-console.log("API_KEY:", API_KEY); // Add this line to check the value
-
 //fetch movies using a search keyword and a page
 export const fetchMovies = async (searchKeyword: string, page: number) => {
   const trimmedSearchKeyword = searchKeyword.trim();

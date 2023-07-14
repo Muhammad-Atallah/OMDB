@@ -1,24 +1,12 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Search.module.css";
 import { useState, useEffect } from "react";
 import { BallTriangle } from "react-loading-icons";
 import { fetchMovies } from "../utils/api";
 import { MovieCard } from "@/components/MovieCard";
 import { SearchBar } from "@/components/SearchBar";
-import { scrollUp } from "@/utils/helpers";
 import { useRouter } from "next/router";
-import {
-  BsFillArrowLeftCircleFill,
-  BsFillArrowRightCircleFill,
-} from "react-icons/bs";
-
-import {
-  MdKeyboardDoubleArrowLeft,
-  MdKeyboardDoubleArrowRight,
-} from "react-icons/md";
-
-import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
+import Pagination from "@/components/Pagination";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,66 +17,6 @@ export default function Search() {
   const [page, setPage] = useState<number>(1);
   const [lastPage, setLastPage] = useState<number>(0);
   const [status, setStatus] = useState<string>("");
-
-  //Handling pagination arrows
-  const handleLeftPaginationArrow = async () => {
-    if (page !== 1) {
-      try {
-        setPage(page - 1);
-        const moviesData = await fetchMovies(searchKeyword, page - 1);
-        setMovies(moviesData.Search);
-        setLastPage(Math.ceil(moviesData.totalResults / 10));
-      } catch (error: any) {
-        console.error(error.message);
-        setMovies([]);
-      }
-    }
-    scrollUp();
-  };
-
-  const handleRightPaginationArrow = async () => {
-    if (page !== lastPage) {
-      try {
-        setMovies([]);
-        setPage(page + 1);
-        const moviesData = await fetchMovies(searchKeyword, page + 1);
-        setMovies(moviesData.Search);
-        setLastPage(Math.ceil(moviesData.totalResults / 10));
-      } catch (error: any) {
-        console.error(error.message);
-        setMovies([]);
-      }
-    }
-    scrollUp();
-  };
-
-  const handleGoToFirstPage = async () => {
-    if (page !== 1) {
-      try {
-        setPage(1);
-        const moviesData = await fetchMovies(searchKeyword, 1);
-        setMovies(moviesData.Search);
-      } catch (error: any) {
-        console.error(error.message);
-        setMovies([]);
-      }
-    }
-    scrollUp();
-  };
-
-  const handleGoToLastPage = async () => {
-    if (page !== lastPage) {
-      try {
-        setPage(lastPage);
-        const moviesData = await fetchMovies(searchKeyword, lastPage);
-        setMovies(moviesData.Search);
-      } catch (error: any) {
-        console.error(error.message);
-        setMovies([]);
-      }
-    }
-    scrollUp();
-  };
 
   //Fetching data based on page query parameters
   useEffect(() => {
@@ -158,9 +86,21 @@ export default function Search() {
             setLastPage={setLastPage}
           />
         </section>
+
+        {/* {Pagination Section} */}
+        <Pagination
+          searchKeyword={searchKeyword}
+          page={page}
+          setPage={setPage}
+          lastPage={lastPage}
+          setLastPage={setLastPage}
+          status={status}
+          setMovies={setMovies}
+        />
+
         {/* {Status section} */}
         {searchKeyword !== "" && (
-          <section className="flex justify-center justify-items-center items-center">
+          <section className="flex justify-center justify-items-center items-center mt-5">
             {status === "Loading..." ? (
               <BallTriangle stroke="#326660" strokeOpacity={0.3} />
             ) : (
@@ -173,7 +113,7 @@ export default function Search() {
 
         {/* {Movies section} */}
         {status === "" && (
-          <section className="w-[100vw] max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10 justify-center justify-items-center">
+          <section className="w-[100vw] max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mt-5 mb-10 justify-center justify-items-center">
             {movies.map((movie) => (
               <MovieCard
                 recommendation="false"
@@ -187,37 +127,15 @@ export default function Search() {
         )}
 
         {/* {Pagination Section} */}
-        <section
-          className={
-            searchKeyword === "" || lastPage < 2 || status !== ""
-              ? "hidden"
-              : "flex gap-2 w-[100vw] justify-center justify-items-center items-center"
-          }
-        >
-          <MdKeyboardDoubleArrowLeft
-            onClick={handleGoToFirstPage}
-            className="bg-[#326660] text-white text-xl rounded-full p-1 cursor-pointer self-center hover:bg-[#449182] shadow-sm"
-            size={30}
-          />
-          <RiArrowLeftSLine
-            onClick={handleLeftPaginationArrow}
-            className="bg-[#326660] text-white text-xl rounded-full p-1 cursor-pointer self-center hover:bg-[#449182] shadow-sm"
-            size={30}
-          />
-          <p className="text-sm self-center text-[#326660]">
-            {page} of {lastPage}
-          </p>
-          <RiArrowRightSLine
-            onClick={handleRightPaginationArrow}
-            className="bg-[#326660] text-white text-xl rounded-full p-1 cursor-pointer self-center hover:bg-[#449182] shadow-sm"
-            size={30}
-          />
-          <MdKeyboardDoubleArrowRight
-            onClick={handleGoToLastPage}
-            className="bg-[#326660] text-white text-xl rounded-full p-1 cursor-pointer self-center hover:bg-[#449182] shadow-sm"
-            size={30}
-          />
-        </section>
+        <Pagination
+          searchKeyword={searchKeyword}
+          page={page}
+          setPage={setPage}
+          lastPage={lastPage}
+          setLastPage={setLastPage}
+          status={status}
+          setMovies={setMovies}
+        />
       </main>
     </>
   );
